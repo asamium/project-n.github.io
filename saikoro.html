@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サイコロ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .dice-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .dice {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 10px;
+      padding: 20px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f9f9f9;
+    }
+    .red { color: red; }
+    .blue { color: blue; }
+    .green { color: green; }
+    .yellow { color: orange; }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>サイコロ</h1>
+  <div class="dice-container">
+    <div class="dice red" id="dice1">-</div>
+    <div class="dice blue" id="dice2">-</div>
+    <div class="dice green" id="dice3">-</div>
+    <div class="dice yellow" id="dice4">-</div>
+  </div>
+  <button onclick="rollDice()">振る</button>
+  <p class="message" id="message"></p>
+
+  <script>
+    // 各サイコロ専用のスタック（1～9と0を2つずつ）
+    const diceStacks = {
+      dice1: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
+      dice2: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
+      dice3: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
+      dice4: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0)
+    };
+
+    function rollDice() {
+      const message = document.getElementById('message');
+      const rolledValues = {}; // 各サイコロの結果を保存
+
+      // 各サイコロのスタックからランダムに1つ選ぶ
+      for (const dice in diceStacks) {
+        const stack = diceStacks[dice];
+
+        if (stack.length === 0) {
+          message.textContent = "すべての数字を使い切りました！リセットしてください。";
+          return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * stack.length);
+        rolledValues[dice] = stack[randomIndex];
+        stack.splice(randomIndex, 1); // 選んだ数字をスタックから除外
+      }
+
+      // サイコロの値を更新
+      document.getElementById('dice1').textContent = rolledValues.dice1;
+      document.getElementById('dice2').textContent = rolledValues.dice2;
+      document.getElementById('dice3').textContent = rolledValues.dice3;
+      document.getElementById('dice4').textContent = rolledValues.dice4;
+
+      // 残りの数字をメッセージに表示
+      message.textContent = `各サイコロの残り: 
+        赤: ${diceStacks.dice1.join(", ") || "なし"}, 
+        青: ${diceStacks.dice2.join(", ") || "なし"}, 
+        緑: ${diceStacks.dice3.join(", ") || "なし"}, 
+        黄: ${diceStacks.dice4.join(", ") || "なし"}`;
+    }
+
+    function resetDice() {
+      // 各サイコロのスタックをリセット（1～9と0を2つずつ復元）
+      diceStacks.dice1 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
+      diceStacks.dice2 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
+      diceStacks.dice3 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
+      diceStacks.dice4 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
+
+      document.getElementById('dice1').textContent = "-";
+      document.getElementById('dice2').textContent = "-";
+      document.getElementById('dice3').textContent = "-";
+      document.getElementById('dice4').textContent = "-";
+      document.getElementById('message').textContent = "サイコロをリセットしました！";
+    }
+  </script>
+
+  <button onclick="resetDice()" style="margin-top: 20px;">リセット</button>
+</body>
+</html>
