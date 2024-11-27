@@ -65,12 +65,12 @@
   <p class="message" id="message"></p>
 
   <script>
-    // 各サイコロ専用のスタック（1～9と0を2つずつ）
+    // 各サイコロ専用のスタック（1～9を2つずつ、0を1つ）
     const diceStacks = {
-      dice1: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
-      dice2: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
-      dice3: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0),
-      dice4: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0)
+      dice1: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
+      dice2: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
+      dice3: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
+      dice4: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0)
     };
 
     function rollDice() {
@@ -106,11 +106,11 @@
     }
 
     function resetDice() {
-      // 各サイコロのスタックをリセット（1～9と0を2つずつ復元）
-      diceStacks.dice1 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
-      diceStacks.dice2 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
-      diceStacks.dice3 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
-      diceStacks.dice4 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0, 0);
+      // 各サイコロのスタックをリセット（1～9を2つずつ、0を1つ復元）
+      diceStacks.dice1 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+      diceStacks.dice2 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+      diceStacks.dice3 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+      diceStacks.dice4 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
 
       document.getElementById('dice1').textContent = "-";
       document.getElementById('dice2').textContent = "-";
