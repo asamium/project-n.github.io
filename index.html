@@ -9,6 +9,9 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      gap: 50px; /* 2つのサイコロのブロック間のスペース */
     }
     .dice-container {
       display: flex;
@@ -54,32 +57,51 @@
   </style>
 </head>
 <body>
-  <h1>サイコロ</h1>
-  <div class="dice-container">
-    <div class="dice red" id="dice1">-</div>
-    <div class="dice blue" id="dice2">-</div>
-    <div class="dice green" id="dice3">-</div>
-    <div class="dice yellow" id="dice4">-</div>
+  <!-- 最初のサイコロのセット -->
+  <div>
+    <h1>サイコロ 1</h1>
+    <div class="dice-container">
+      <div class="dice red" id="dice1">-</div>
+      <div class="dice blue" id="dice2">-</div>
+    </div>
+    <button onclick="rollDice1()" id="button1">振る</button>
+    <p class="message" id="message1"></p>
+    <button onclick="resetDice1()" style="margin-top: 20px;">リセット</button>
   </div>
-  <button onclick="rollDice()">振る</button>
-  <p class="message" id="message"></p>
+
+  <!-- 2番目のサイコロのセット -->
+  <div>
+    <h1>サイコロ 2</h1>
+    <div class="dice-container">
+      <div class="dice green" id="dice3">-</div>
+      <div class="dice yellow" id="dice4">-</div>
+    </div>
+    <button onclick="rollDice2()" id="button2">振る</button>
+    <p class="message" id="message2"></p>
+    <button onclick="resetDice2()" style="margin-top: 20px;">リセット</button>
+  </div>
 
   <script>
-    // 各サイコロ専用のスタック（1～9を2つずつ、0を1つ）
-    const diceStacks = {
+    // サイコロ1用のスタック（1～9を2つずつ、0を1つ）
+    const diceStacks1 = {
       dice1: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
       dice2: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
-      dice3: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
-      dice4: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0)
     };
 
-    function rollDice() {
-      const message = document.getElementById('message');
+    // サイコロ2用のスタック（1～9を2つずつ、0を1つ）
+    const diceStacks2 = {
+      dice3: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
+      dice4: Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0),
+    };
+
+    // サイコロ1を振る
+    function rollDice1() {
+      const message = document.getElementById('message1');
       const rolledValues = {}; // 各サイコロの結果を保存
 
       // 各サイコロのスタックからランダムに1つ選ぶ
-      for (const dice in diceStacks) {
-        const stack = diceStacks[dice];
+      for (const dice in diceStacks1) {
+        const stack = diceStacks1[dice];
 
         if (stack.length === 0) {
           message.textContent = "すべての数字を使い切りました！リセットしてください。";
@@ -94,32 +116,72 @@
       // サイコロの値を更新
       document.getElementById('dice1').textContent = rolledValues.dice1;
       document.getElementById('dice2').textContent = rolledValues.dice2;
+
+      // 残りの数字を表示しない
+      message.textContent = ""; // ここで残りの数字の表示を消去
+    }
+
+    // サイコロ1をリセット
+    function resetDice1() {
+      // スタックをリセット
+      diceStacks1.dice1 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+      diceStacks1.dice2 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+
+      // サイコロの表示をリセット
+      document.getElementById('dice1').textContent = "-";
+      document.getElementById('dice2').textContent = "-";
+      document.getElementById('message1').textContent = "サイコロ1をリセットしました！";
+    }
+
+    // サイコロ2を振る
+    function rollDice2() {
+      const message = document.getElementById('message2');
+      const rolledValues = {}; // 各サイコロの結果を保存
+
+      // 各サイコロのスタックからランダムに1つ選ぶ
+      for (const dice in diceStacks2) {
+        const stack = diceStacks2[dice];
+
+        if (stack.length === 0) {
+          message.textContent = "すべての数字を使い切りました！リセットしてください。";
+          return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * stack.length);
+        rolledValues[dice] = stack[randomIndex];
+        stack.splice(randomIndex, 1); // 選んだ数字をスタックから除外
+      }
+
+      // サイコロの値を更新
       document.getElementById('dice3').textContent = rolledValues.dice3;
       document.getElementById('dice4').textContent = rolledValues.dice4;
 
-      // 残りの数字をメッセージに表示
-      message.textContent = `各サイコロの残り: 
-        赤: ${diceStacks.dice1.join(", ") || "なし"}, 
-        青: ${diceStacks.dice2.join(", ") || "なし"}, 
-        緑: ${diceStacks.dice3.join(", ") || "なし"}, 
-        黄: ${diceStacks.dice4.join(", ") || "なし"}`;
+      // 残りの数字を表示しない
+      message.textContent = ""; // ここで残りの数字の表示を消去
     }
 
-    function resetDice() {
-      // 各サイコロのスタックをリセット（1～9を2つずつ、0を1つ復元）
-      diceStacks.dice1 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
-      diceStacks.dice2 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
-      diceStacks.dice3 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
-      diceStacks.dice4 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+    // サイコロ2をリセット
+    function resetDice2() {
+      // スタックをリセット
+      diceStacks2.dice3 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
+      diceStacks2.dice4 = Array.from({ length: 9 }, (_, i) => i + 1).flatMap(num => [num, num]).concat(0);
 
-      document.getElementById('dice1').textContent = "-";
-      document.getElementById('dice2').textContent = "-";
+      // サイコロの表示をリセット
       document.getElementById('dice3').textContent = "-";
       document.getElementById('dice4').textContent = "-";
-      document.getElementById('message').textContent = "サイコロをリセットしました！";
+      document.getElementById('message2').textContent = "サイコロ2をリセットしました！";
     }
-  </script>
 
-  <button onclick="resetDice()" style="margin-top: 20px;">リセット</button>
+    // キーイベントのバインド
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'f' || event.key === 'F') {
+        // Fキーが押されたらサイコロ1のボタンをクリック
+        document.getElementById('button1').click();
+      } else if (event.key === 'j' || event.key === 'J') {
+        // Jキーが押されたらサイコロ2のボタンをクリック
+        document.getElementById('button2').click();
+      }
+    });
+  </script>
 </body>
 </html>
